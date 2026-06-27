@@ -1,81 +1,212 @@
-# AI Resume Analyzer
+AI Resume Analyzer
 
-AI Resume Analyzer is a modern, full-stack web application designed to evaluate PDF resumes against applicant tracking systems (ATS) standards. It parses PDF text in the backend and runs it through an AI model (OpenAI or Gemini) using custom structured prompts to return an overall score, highlights, friction points, missing skills, and improvement ideas in a premium glassmorphic dashboard.
+AI Resume Analyzer is a full-stack web application that evaluates PDF resumes against Applicant Tracking System (ATS) standards using Artificial Intelligence. Users can upload a resume, which is parsed on the backend and analyzed using either OpenAI GPT-4o-mini or Google Gemini 1.5 Flash. The application returns an ATS score along with strengths, weaknesses, missing skills, and personalized improvement suggestions through a modern glassmorphic dashboard.
 
----
-
-## Key Features
-
-- **Drag-and-Drop Resume Uploader**: Fast, validation-backed file ingestion supporting files up to 5MB.
-- **AI-Powered Evaluation**: Integrated with both OpenAI (GPT-4o-mini) and Google Gemini (Gemini 1.5 Flash).
-- **Auto-Mock Mode**: Don't have API keys yet? The server automatically falls back to a smart mock evaluation so you can test the entire workflow end-to-end immediately.
-- **Dynamic Score Gauge**: Beautifully animated SVG circle depicting the ATS score.
-- **Developer Copy & Download Tools**: Export the AI feedback report directly as a markdown-formatted file or download the raw JSON output.
-
----
-
-## Folder Structure
-
-```bash
+Features
+Drag-and-drop PDF upload
+AI-powered ATS resume analysis
+Support for OpenAI and Gemini
+Automatic Mock Mode when API keys are unavailable
+Animated ATS score gauge
+Resume strengths and weaknesses
+Missing skills detection
+Improvement recommendations
+Copy report as Markdown
+Download complete JSON report
+Tech Stack
+Frontend
+React (Vite)
+CSS3
+SVG Animations
+Backend
+Node.js
+Express.js
+Multer
+PDF Parser
+AI
+OpenAI GPT-4o-mini
+Google Gemini 1.5 Flash
+Project Structure
 resume-analyzer/
-├── client/                 # React frontend (Vite)
+│
+├── client/
 │   ├── src/
-│   │   ├── components/     # UI elements (Dashboard, UploadZone)
-│   │   ├── App.jsx         # State container & layout controller
-│   │   └── index.css       # Premium glassmorphic design system
-│   ├── index.html          # Web page wrapper
-│   └── package.json
-├── server/                 # Express.js backend
-│   ├── services/           # AI connections (OpenAI, Gemini)
-│   ├── utils/              # Parsers & cleaners
-│   ├── index.js            # Express server configuration
-│   ├── .env.example        # Environment variables template
-│   └── package.json
-├── README.md               # Main instructions
-├── tech.md                 # Technical stack explanation
-└── skill.md                # Demonstrated skills documentation
-```
-
----
-
-## Quick Start Setup 
-
-### 1. Clone & Navigate
-Navigate to your workspace directory:
-```bash
+│   │   ├── components/
+│   │   ├── App.jsx
+│   │   └── index.css
+│   ├── package.json
+│   └── index.html
+│
+├── server/
+│   ├── services/
+│   ├── utils/
+│   ├── index.js
+│   ├── package.json
+│   └── .env.example
+│
+├── README.md
+├── tech.md
+└── skill.md
+Project Setup
+1. Clone Repository
+git clone <repository-url>
 cd resume-analyzer
-```
+2. Backend Configuration
 
-### 2. Configure Backend (.env)
-Create the `.env` file from the example in the server folder:
-```bash
+Create the environment file.
+
 cp server/.env.example server/.env
-# On Windows PowerShell:
+
+Windows:
+
 copy server\.env.example server\.env
-```
-Open `server/.env` and edit:
-- **`AI_PROVIDER`**: Set to `openai` or `gemini`.
-- Add your corresponding **`OPENAI_API_KEY`** or **`GEMINI_API_KEY`**.
-- *Note: If keys are left unconfigured, the application runs in a customizable Mock mode.*
 
-### 3. Install Dependencies & Run
+Update the following variables:
 
-We recommend opening two terminal windows:
+AI_PROVIDER=openai
 
-#### Terminal 1: Backend Server (Port 5000)
-```bash
+OPENAI_API_KEY=your_key
+
+GEMINI_API_KEY=your_key
+
+Choose either:
+
+AI_PROVIDER=openai
+
+or
+
+AI_PROVIDER=gemini
+
+If no API key is provided, the application automatically switches to Mock Mode.
+
+3. Install Dependencies
+
+Backend
+
 cd server
 npm install
 npm run start
-```
 
-#### Terminal 2: Frontend Client (Port 3000)
-```bash
+Frontend
+
 cd client
 npm install
 npm run dev
-```
+4. Run Application
 
-Visit [http://localhost:3000](http://localhost:3000) in your browser!
-Vite is pre-configured to proxy request routes containing `/api` directly to your Express server running on port 5000.
-#
+Frontend
+
+http://localhost:3000
+
+Backend
+
+http://localhost:5000
+
+The frontend proxies /api requests to the backend.
+
+Application Workflow
+User Uploads Resume
+        │
+        ▼
+Frontend sends PDF
+        │
+        ▼
+Express Backend
+        │
+        ▼
+PDF Text Extraction
+        │
+        ▼
+AI Service
+(OpenAI / Gemini)
+        │
+        ▼
+Structured JSON Response
+        │
+        ▼
+React Dashboard
+Architecture
+                +----------------+
+                | React Frontend |
+                +-------+--------+
+                        |
+                     REST API
+                        |
+                +-------v--------+
+                | Express Server |
+                +-------+--------+
+                        |
+            PDF Parsing & Cleaning
+                        |
+                +-------v--------+
+                | AI Service     |
+                | OpenAI/Gemini  |
+                +-------+--------+
+                        |
+                  JSON Analysis
+                        |
+                +-------v--------+
+                | React UI       |
+                +----------------+
+AI Usage
+
+The application integrates with Large Language Models to perform ATS-style resume evaluation.
+
+The AI is responsible for:
+
+ATS scoring
+Resume summary
+Strength identification
+Weakness detection
+Missing skills analysis
+Improvement suggestions
+
+The backend abstracts AI providers so switching between OpenAI and Gemini requires only changing one environment variable.
+
+If neither API key is configured, a Mock AI service generates realistic responses for testing without external dependencies.
+
+Prompt Used
+
+The backend sends the extracted resume text to the AI using a structured prompt.
+
+Example:
+
+You are an ATS Resume Evaluator.
+
+Analyze the following resume and return ONLY valid JSON.
+
+Return:
+
+{
+  "score": number,
+  "summary": "",
+  "strengths": [],
+  "weaknesses": [],
+  "missingSkills": [],
+  "improvements": []
+}
+
+Resume:
+
+<resume_text>
+
+Using a structured prompt ensures:
+
+Consistent output
+Easy JSON parsing
+Reliable frontend rendering
+Minimal post-processing
+API Flow
+Upload Resume
+      │
+POST /api/analyze
+      │
+PDF Extraction
+      │
+Prompt Generation
+      │
+AI Response
+      │
+JSON Validation
+      │
+Return Analysis
