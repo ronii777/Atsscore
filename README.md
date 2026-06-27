@@ -1,23 +1,54 @@
 # AI Resume Analyzer
 
-AI Resume Analyzer is a modern, full-stack web application designed to evaluate PDF resumes against applicant tracking systems (ATS) standards. It parses PDF text in the backend and runs it through an AI model (OpenAI or Gemini) using custom structured prompts to return an overall score, highlights, friction points, missing skills, and improvement ideas in a premium glassmorphic dashboard.
+AI Resume Analyzer is a modern, full-stack web application that evaluates PDF resumes against ATS (Applicant Tracking System) standards. The backend extracts text from the uploaded PDF and sends it to an AI provider for analysis. The app supports either OpenAI or Google Gemini, and can also fall back to a built-in mock mode when no API key is configured.
 
 ---
 
 ## Key Features
 
-- **Drag-and-Drop Resume Uploader**: Fast, validation-backed file ingestion supporting files up to 5MB.
-- **AI-Powered Evaluation**: Integrated with both OpenAI (GPT-4o-mini) and Google Gemini (Gemini 1.5 Flash).
-- **Auto-Mock Mode**: Don't have API keys yet? The server automatically falls back to a smart mock evaluation so you can test the entire workflow end-to-end immediately.
-- **Dynamic Score Gauge**: Beautifully animated SVG circle depicting the ATS score.
-- **Developer Copy & Download Tools**: Export the AI feedback report directly as a markdown-formatted file or download the raw JSON output.
+- Drag-and-Drop Resume Uploader: Fast, validation-backed file ingestion supporting files up to 5MB.
+- AI-Powered Evaluation: Works with OpenAI (default model: `gpt-4o-mini`) or Google Gemini (default model: `gemini-1.5-flash`).
+- Auto-Mock Mode: If API keys are missing, the server automatically uses a smart local mock evaluation so you can test the full workflow immediately.
+- Dynamic Score Gauge: Beautifully animated ATS score visualization.
+- Developer Copy & Download Tools: Export feedback as markdown or download raw JSON.
+
+---
+
+## AI Tool and Model Setup
+
+The AI provider and model are configured in the backend environment file:
+
+- `server/.env`
+- `server/services/aiService.js`
+
+### Supported AI Options
+
+- OpenAI
+  - Provider value: `AI_PROVIDER=openai`
+  - Model value: `OPENAI_MODEL=gpt-4o-mini`
+- Google Gemini
+  - Provider value: `AI_PROVIDER=gemini`
+  - Model value: `GEMINI_MODEL=gemini-1.5-flash`
+
+### How to Enable Real AI
+
+1. Open `server/.env`.
+2. Choose one provider:
+   - `AI_PROVIDER=openai` and add `OPENAI_API_KEY=...`
+   - or `AI_PROVIDER=gemini` and add `GEMINI_API_KEY=...`
+3. Optionally change the model by setting:
+   - `OPENAI_MODEL=gpt-4o-mini`
+   - or `GEMINI_MODEL=gemini-1.5-flash`
+4. Save the file and restart the backend server.
+
+If you do not set an API key, the app will still run in mock mode.
 
 ---
 
 ## Folder Structure
 
 ```bash
-resume-analyzer/
+ss12/
 ├── client/                 # React frontend (Vite)
 │   ├── src/
 │   │   ├── components/     # UI elements (Dashboard, UploadZone)
@@ -38,31 +69,37 @@ resume-analyzer/
 
 ---
 
-## Quick Start Setup 
+## Quick Start Setup
 
 ### 1. Clone & Navigate
-Navigate to your workspace directory:
+
 ```bash
-cd resume-analyzer
+cd ss12
 ```
 
 ### 2. Configure Backend (.env)
-Create the `.env` file from the example in the server folder:
+
+Create the environment file from the example:
+
 ```bash
-cp server/.env.example server/.env
-# On Windows PowerShell:
 copy server\.env.example server\.env
 ```
-Open `server/.env` and edit:
-- **`AI_PROVIDER`**: Set to `openai` or `gemini`.
-- Add your corresponding **`OPENAI_API_KEY`** or **`GEMINI_API_KEY`**.
-- *Note: If keys are left unconfigured, the application runs in a customizable Mock mode.*
+
+Then edit `server/.env` and set:
+
+- `AI_PROVIDER=openai` or `AI_PROVIDER=gemini`
+- `OPENAI_API_KEY=...` if using OpenAI
+- `GEMINI_API_KEY=...` if using Gemini
+- Optional model values:
+  - `OPENAI_MODEL=gpt-4o-mini`
+  - `GEMINI_MODEL=gemini-1.5-flash`
 
 ### 3. Install Dependencies & Run
 
-We recommend opening two terminal windows:
+Open two terminals.
 
 #### Terminal 1: Backend Server (Port 5000)
+
 ```bash
 cd server
 npm install
@@ -70,12 +107,13 @@ npm run start
 ```
 
 #### Terminal 2: Frontend Client (Port 3000)
+
 ```bash
 cd client
 npm install
 npm run dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000) in your browser!
-Vite is pre-configured to proxy request routes containing `/api` directly to your Express server running on port 5000.
-#
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+The frontend is pre-configured to proxy `/api` requests to the Express server running on port 5000.
